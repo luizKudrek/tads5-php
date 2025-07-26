@@ -62,8 +62,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 (new TableLocator())->allowFallbackClass(false)
             );
         }
-        $this->addPlugin('Authentication');
 
+        $this->addPlugin('Authentication');
     }
 
     /**
@@ -95,18 +95,15 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             // https://book.cakephp.org/5/en/controllers/middleware.html#body-parser-middleware
             ->add(new BodyParserMiddleware())
 
-
+            ->add(new AuthenticationMiddleware($this));
 
             // Cross Site Request Forgery (CSRF) Protection Middleware
             // https://book.cakephp.org/5/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
             //->add(new CsrfProtectionMiddleware([
             //    'httponly' => true,
-           // ]));
-        ->add(new AuthenticationMiddleware($this));
+            //]));
 
         return $middlewareQueue;
-
-
     }
 
     /**
@@ -120,7 +117,12 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     {
     }
 
-
+    /**
+     * Returns a service provider instance.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request
+     * @return \Authentication\AuthenticationServiceInterface
+     */
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
         $service = new AuthenticationService();

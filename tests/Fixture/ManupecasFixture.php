@@ -21,8 +21,8 @@ class ManupecasFixture extends TestFixture
             [
                 'id' => 1,
                 'ativo' => 'L',
-                'created' => '2025-04-22 21:21:39',
-                'modified' => '2025-04-22 21:21:39',
+                'created' => '2025-04-22 21:18:53',
+                'modified' => '2025-04-22 21:18:53',
                 'manutencao_id' => 1,
                 'peca_id' => 1,
             ],

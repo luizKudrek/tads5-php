@@ -25,8 +25,8 @@ class PecasFixture extends TestFixture
                 'garantia' => 1,
                 'numntfiscal' => 1,
                 'ativo' => 'L',
-                'created' => '2025-04-22 21:50:17',
-                'modified' => '2025-04-22 21:50:17',
+                'created' => '2025-04-22 21:47:48',
+                'modified' => '2025-04-22 21:47:48',
                 'fornecedor_id' => 1,
             ],
         ];

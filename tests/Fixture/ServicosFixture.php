@@ -22,8 +22,8 @@ class ServicosFixture extends TestFixture
                 'id' => 1,
                 'tipo' => 'Lorem ipsum dolor sit amet',
                 'ativo' => 'L',
-                'created' => '2025-04-22 21:20:48',
-                'modified' => '2025-04-22 21:20:48',
+                'created' => '2025-04-22 21:18:17',
+                'modified' => '2025-04-22 21:18:17',
             ],
         ];
         parent::init();

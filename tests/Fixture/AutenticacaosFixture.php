@@ -20,12 +20,12 @@ class AutenticacaosFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'autenticacao' => 'Lorem ipsum dolor sit amet',
+                'hash' => 'Lorem ipsum dolor sit amet',
+                'expira' => '2025-05-06',
                 'ativo' => 'L',
-                'created' => '2025-04-15 22:18:58',
-                'modified' => '2025-04-15 22:18:58',
+                'created' => '2025-05-06 19:57:46',
+                'modified' => '2025-05-06 19:57:46',
                 'user_id' => 1,
-                'expira' => '2025-04-15',
             ],
         ];
         parent::init();

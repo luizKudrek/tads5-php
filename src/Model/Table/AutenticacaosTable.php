@@ -42,7 +42,7 @@ class AutenticacaosTable extends Table
         parent::initialize($config);
 
         $this->setTable('autenticacaos');
-        $this->setDisplayField('cpf');
+        $this->setDisplayField('hash');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
@@ -62,10 +62,15 @@ class AutenticacaosTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->scalar('autenticacao')
-            ->maxLength('autenticacao', 152)
-            ->requirePresence('autenticacao', 'create')
-            ->notEmptyString('autenticacao');
+            ->scalar('hash')
+            ->maxLength('hash', 255)
+            ->requirePresence('hash', 'create')
+            ->notEmptyString('hash');
+
+        $validator
+            ->date('expira')
+            ->requirePresence('expira', 'create')
+            ->notEmptyDate('expira');
 
         $validator
             ->scalar('ativo')
@@ -75,11 +80,6 @@ class AutenticacaosTable extends Table
         $validator
             ->integer('user_id')
             ->notEmptyString('user_id');
-
-        $validator
-            ->date('expira')
-            ->requirePresence('expira', 'create')
-            ->notEmptyDate('expira');
 
         return $validator;
     }

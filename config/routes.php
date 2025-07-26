@@ -55,14 +55,15 @@ return function (RouteBuilder $routes): void {
          * its action called 'display', and we pass a param to select the view file
          * to use (in this case, templates/Pages/home.php)...
          */
-        //logar e buscar usuario
-        $builder->connect('/bscUser', ['controller' => 'Pages', 'action' => 'buscaruser']);
 
-        //adicionar itens das tabelas no banco de dados
+        // Logar e Buscar Usuário
         $builder->connect('/logar', ['controller' => 'Pages', 'action' => 'logar']);
+        $builder->connect('/getUsers', ['controller' => 'Pages', 'action' => 'buscaruser']);
+
+        // Adicionar os itens das Tabelas no Banco de Dados
         $builder->connect('/addUser', ['controller' => 'Adicionas', 'action' => 'adicionaruser']);
-        $builder->connect('/addServiço', ['controller' => 'Adicionas', 'action' => 'adicionarservico']);
-        $builder->connect('/addFornecedor', ['controller' => 'Adicionas', 'action' => 'adicionafornecedor']);
+        $builder->connect('/addServico', ['controller' => 'Adicionas', 'action' => 'adicionarservico']);
+        $builder->connect('/addFornecedor', ['controller' => 'Adicionas', 'action' => 'adicionarfornecedor']);
         $builder->connect('/addPeca', ['controller' => 'Adicionas', 'action' => 'adicionarpeca']);
         $builder->connect('/addFabricante', ['controller' => 'Adicionas', 'action' => 'adicionarfabricante']);
         $builder->connect('/addTipo', ['controller' => 'Adicionas', 'action' => 'adicionartipo']);
@@ -70,10 +71,25 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/addManutencao', ['controller' => 'Adicionas', 'action' => 'adicionarmanutencao']);
         $builder->connect('/addManupeca', ['controller' => 'Adicionas', 'action' => 'adicionarmanupeca']);
 
+        // Editar
+        $builder->connect('/editServico', ['controller' => 'Editar', 'action' => 'editarServico']);
+
+
+        // Visualizar os itens salvos do Danco de Dados.
+        $builder->connect('/visualManutencao', ['controller' => 'Visualizacaos', 'action' => 'visualManutencao']);
+        $builder->connect('/getServicos', ['controller' => 'Servicos', 'action' => 'index']);
+        $builder->connect('/getFabricantes', ['controller' => 'Fabricantes', 'action' => 'index']);
+
+        // adicionar itens no banco
+
+
+        // visualizar um item do banco
+        $builder->connect('/getServico', ['controller' => 'Servicos', 'action' => 'view']);
+
         /*
          * ...and connect the rest of 'Pages' controller's URLs.
          */
-        $builder->connect('/pages/*', 'Pages::display');
+        //$builder->connect('/pages/*', 'Pages::display');
 
         /*
          * Connect catchall routes for all controllers.

@@ -11,8 +11,6 @@ use Cake\Validation\Validator;
 /**
  * Users Model
  *
- * @property \App\Model\Table\AutenticacaosTable&\Cake\ORM\Association\HasMany $Autenticacaos
- *
  * @method \App\Model\Entity\User newEmptyEntity()
  * @method \App\Model\Entity\User newEntity(array $data, array $options = [])
  * @method array<\App\Model\Entity\User> newEntities(array $data, array $options = [])
@@ -61,12 +59,6 @@ class UsersTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->scalar('nome')
-            ->maxLength('nome', 180)
-            ->requirePresence('nome', 'create')
-            ->notEmptyString('nome');
-
-        $validator
             ->scalar('cpf')
             ->maxLength('cpf', 14)
             ->requirePresence('cpf', 'create')
@@ -74,9 +66,15 @@ class UsersTable extends Table
 
         $validator
             ->scalar('password')
-            ->maxLength('password', 125)
+            ->maxLength('password', 255)
             ->requirePresence('password', 'create')
             ->notEmptyString('password');
+
+        $validator
+            ->scalar('nome')
+            ->maxLength('nome', 180)
+            ->requirePresence('nome', 'create')
+            ->notEmptyString('nome');
 
         $validator
             ->scalar('celular')

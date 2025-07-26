@@ -3,25 +3,22 @@ declare(strict_types=1);
 
 namespace App\Model\Entity;
 
-
-use Cake\ORM\Entity;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Cake\ORM\Entity;
 
 /**
  * User Entity
  *
  * @property int $id
- * @property string $nome
  * @property string $cpf
  * @property string $password
+ * @property string $nome
  * @property string $celular
  * @property \Cake\I18n\Date $dtnasc
  * @property string $email
  * @property string|null $ativo
  * @property \Cake\I18n\DateTime $created
  * @property \Cake\I18n\DateTime $modified
- *
- * @property \App\Model\Entity\Autenticacao[] $autenticacaos
  */
 class User extends Entity
 {
@@ -35,16 +32,15 @@ class User extends Entity
      * @var array<string, bool>
      */
     protected array $_accessible = [
-        'nome' => true,
         'cpf' => true,
         'password' => true,
+        'nome' => true,
         'celular' => true,
         'dtnasc' => true,
         'email' => true,
         'ativo' => true,
         'created' => true,
         'modified' => true,
-        'autenticacaos' => true,
     ];
 
     /**
@@ -56,7 +52,7 @@ class User extends Entity
         'password',
     ];
 
-    protected function _setPassword($password)
+    protected function _setPassword(string $password)
     {
         $hasher = new DefaultPasswordHasher();
         return $hasher->hash($password);
