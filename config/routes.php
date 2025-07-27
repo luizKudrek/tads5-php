@@ -80,11 +80,14 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/getServicos', ['controller' => 'Servicos', 'action' => 'index']);
         $builder->connect('/getFabricantes', ['controller' => 'Fabricantes', 'action' => 'index']);
 
-        // adicionar itens no banco
 
 
         // visualizar um item do banco
         $builder->connect('/getServico', ['controller' => 'Servicos', 'action' => 'view']);
+
+        // deletar itens
+
+
 
         /*
          * ...and connect the rest of 'Pages' controller's URLs.
