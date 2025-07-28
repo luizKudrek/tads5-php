@@ -1,7 +1,9 @@
 <?php
-declare(strict_types=1);
 
 namespace App\Controller;
+
+use App\Controller\AppController;
+use Cake\ORM\Exception\PersistenceFailedException;
 
 /**
  * Fabricantes Controller
@@ -71,17 +73,38 @@ class FabricantesController extends AppController
      */
     public function edit($id = null)
     {
-        $fabricante = $this->Fabricantes->get($id, contain: []);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $fabricante = $this->Fabricantes->patchEntity($fabricante, $this->request->getData());
-            if ($this->Fabricantes->save($fabricante)) {
-                $this->Flash->success(__('The fabricante has been saved.'));
+        {
+            $response = null;
+            $statusCode = 200;
 
-                return $this->redirect(['action' => 'index']);
+            if ($this->request->is(['post', 'put', 'patch'])) {
+                $data = $this->request->getData();
+                $id = $data['id'] ?? null;
+
+                if ($id === null) {
+                    $statusCode = 400;
+                    $response = ['erro' => 'ID do serviço não fornecido.'];
+                } else {
+                    $servico = $this->Fabricantes->get($id);
+
+                    $servico = $this->Fabricantes->patchEntity($servico, $data);
+
+                    try {
+                        $this->Fabricantes->saveOrFail($servico);
+                        $response = 'Serviço editado com sucesso!';
+                    } catch (\Cake\ORM\Exception\PersistenceFailedException $e) {
+                        $statusCode = 400;
+                        $response = $e->getAttributes();
+                    }
+                }
             }
-            $this->Flash->error(__('The fabricante could not be saved. Please, try again.'));
-        }
-        $this->set(compact('fabricante'));
+
+            return $this->response
+                ->withHeader('Access-Control-Allow-Origin', '*')
+                ->withStatus($statusCode)
+                ->withType('application/json')
+                ->withStringBody(json_encode($response));
+    }
     }
 
     /**

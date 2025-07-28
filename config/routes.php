@@ -73,12 +73,14 @@ return function (RouteBuilder $routes): void {
 
         // Editar
         $builder->connect('/editServico', ['controller' => 'Editar', 'action' => 'editarServico']);
-
+        $builder->connect('/editFabricantes', ['controller' => 'Fabricantes', 'action' => 'edit']);
 
         // Visualizar os itens salvos do Danco de Dados.
         $builder->connect('/visualManutencao', ['controller' => 'Visualizacaos', 'action' => 'visualManutencao']);
         $builder->connect('/getServicos', ['controller' => 'Servicos', 'action' => 'index']);
         $builder->connect('/getFabricantes', ['controller' => 'Fabricantes', 'action' => 'index']);
+        $builder->connect('/getVeiculos', ['controller' => 'Veiculos', 'action' => 'index']);
+
 
 
 
