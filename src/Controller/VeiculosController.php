@@ -21,13 +21,13 @@ class VeiculosController extends AppController
             ->contain(['Fabricantes', 'Tipos']);
         $veiculos = $this->paginate($query);
 
-        //$this->set(compact('veiculos'));
+        //$this->set(compact('Veiculos'));
         return $this->response
             ->withHeader('Access-Control-Allow-Origin', '*')
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
             ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
             ->withType('application/json')
-            ->withStringBody(json_encode($veiculos));
+            ->withStringBody(json_encode($Veiculos));
     }
 
     /**
