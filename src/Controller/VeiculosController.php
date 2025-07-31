@@ -27,7 +27,7 @@ class VeiculosController extends AppController
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
             ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
             ->withType('application/json')
-            ->withStringBody(json_encode($Veiculos));
+            ->withStringBody(json_encode($veiculos));
     }
 
     /**
