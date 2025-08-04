@@ -82,6 +82,7 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/getFabricantes', ['controller' => 'Fabricantes', 'action' => 'index']);
         $builder->connect('/getVeiculos', ['controller' => 'Veiculos', 'action' => 'index']);
         $builder->connect('/getFornecedors', ['controller' => 'Fornecedors', 'action' => 'index']);
+        $builder->connect('/getPecas', ['controller' => 'Pecas', 'action' => 'index']);
 
         // Deletar itens.
         $builder->connect('/deleteVeiculos', ['controller' => 'Veiculos', 'action' => 'delete']);
