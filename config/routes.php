@@ -81,21 +81,19 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/getServicos', ['controller' => 'Servicos', 'action' => 'index']);
         $builder->connect('/getFabricantes', ['controller' => 'Fabricantes', 'action' => 'index']);
         $builder->connect('/getVeiculos', ['controller' => 'Veiculos', 'action' => 'index']);
+        $builder->connect('/getFornecedors', ['controller' => 'Fornecedors', 'action' => 'index']);
 
         // Deletar itens.
         $builder->connect('/deleteVeiculos', ['controller' => 'Veiculos', 'action' => 'delete']);
 
+        // Visualizar apenas um item por id
+        $builder->connect('/viewVeiculos', ['controller' => 'Veiculos', 'action' => 'view']);
+        $builder->connect('/viewFabricantes', ['controller' => 'Fabricantes', 'action' => 'view']);
+        $builder->connect('/viewPecas', ['controller' => 'Pecas', 'action' => 'view']);
+        $builder->connect('/viewServicos', ['controller' => 'Servicos', 'action' => 'view']);
 
 
 
-
-
-        // visualizar um item do banco
-        $builder->connect('/getServico', ['controller' => 'Servicos', 'action' => 'view']);
-        $builder->connect('/getVeiculos', ['controller' => 'Veiculos', 'action' => 'view']);
-
-
-        // deletar itens
 
 
 

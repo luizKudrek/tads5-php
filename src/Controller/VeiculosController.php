@@ -37,10 +37,40 @@ class VeiculosController extends AppController
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view()
     {
-        $veiculo = $this->Veiculos->get($id, contain: ['Fabricantes', 'Tipos', 'Manutencaos']);
-        $this->set(compact('veiculo'));
+        $response   = null;
+        $statusCode = 200;
+
+        // Tenta pegar o ID enviado em multipart/form-data, x-www-form-urlencoded ou JSON
+        $id = $this->request->getData('id');
+        if ($id === null) {
+            // Tenta pegar como query-string (?id=1)
+            $id = $this->request->getQuery('id');
+        }
+
+        if ($id === null) {
+            $statusCode = 400;
+            $response   = ['erro' => 'ID do veículo não fornecido.'];
+        } else {
+            try {
+                $veiculo  = $this->Veiculos->get($id, [
+                    'contain' => ['Fabricantes', 'Tipos', 'Manutencaos']
+                ]);
+                $response = $veiculo;
+            } catch (\Exception $e) {
+                $statusCode = 404;
+                $response   = ['erro' => 'Veículo não encontrado.'];
+            }
+        }
+
+        return $this->response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
+            ->withStatus($statusCode)
+            ->withType('application/json')
+            ->withStringBody(json_encode($response));
     }
 
     /**

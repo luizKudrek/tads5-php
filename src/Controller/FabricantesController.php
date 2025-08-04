@@ -34,15 +34,41 @@ class FabricantesController extends AppController
     /**
      * View method
      *
-     * @param string|null $id Fabricante id.
+     * @param string|null $id Fabricantes id.
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view()
     {
-        $fabricante = $this->Fabricantes->get($id, contain: ['Veiculos']);
-        $this->set(compact('fabricante'));
+        $response = null;
+        $statusCode = 200;
+
+        $data = $this->request->input('json_decode', true);
+        $id = $data['id'] ?? null;
+
+        if ($id === null) {
+            $statusCode = 400;
+            $response = ['erro' => 'ID do fabricante não fornecido.'];
+        } else {
+            try {
+                $fabricante = $this->Fabricantes->get($id);
+                $response = $fabricante;
+            } catch (\Exception $e) {
+                $statusCode = 404;
+                $response = ['erro' => 'Fabricante não encontrado.'];
+            }
+        }
+
+        return $this->response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
+            ->withStatus($statusCode)
+            ->withType('application/json')
+            ->withStringBody(json_encode($response));
     }
+
+
 
     /**
      * Add method
@@ -67,10 +93,11 @@ class FabricantesController extends AppController
     /**
      * Edit method
      *
-     * @param string|null $id Fabricante id.
+     * @param string|null $id Fabricantes id.
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+
     public function edit($id = null)
     {
         {
@@ -110,7 +137,7 @@ class FabricantesController extends AppController
     /**
      * Delete method
      *
-     * @param string|null $id Fabricante id.
+     * @param string|null $id Fabricantes id.
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
