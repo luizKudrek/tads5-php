@@ -102,7 +102,7 @@ class VeiculosController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    /*public function edit($id = null)
     {
         $veiculo = $this->Veiculos->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -116,8 +116,53 @@ class VeiculosController extends AppController
         }
         $fabricantes = $this->Veiculos->Fabricantes->find('list', limit: 200)->all();
         $tipos = $this->Veiculos->Tipos->find('list', limit: 200)->all();
-        $this->set(compact('veiculo', 'fabricantes', 'tipos'));
+      //  $this->set(compact('veiculo', 'fabricantes', 'tipos'));
+        return $this->response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
+            ->withStatus($statusCode)
+            ->withType('application/json')
+            ->withStringBody(json_encode($response));
     }
+    */
+    public function edit($id = null)
+    {
+        $response = null;
+        $statusCode = 200;
+
+        try {
+            $veiculo = $this->Veiculos->get($id, ['contain' => []]);
+
+            if ($this->request->is(['patch', 'post', 'put'])) {
+                $data = $this->request->getData();
+
+                $veiculo = $this->Veiculos->patchEntity($veiculo, $data);
+
+                if ($this->Veiculos->save($veiculo)) {
+                    $response = ['status' => 'success', 'message' => 'Veículo atualizado com sucesso'];
+                } else {
+                    $statusCode = 400;
+                    $response = ['status' => 'error', 'message' => 'Erro ao atualizar o veículo', 'errors' => $veiculo->getErrors()];
+                }
+            } else {
+                $statusCode = 405;
+                $response = ['status' => 'error', 'message' => 'Método não permitido'];
+            }
+        } catch (\Exception $e) {
+            $statusCode = 500;
+            $response = ['status' => 'error', 'message' => 'Erro interno do servidor', 'exception' => $e->getMessage()];
+        }
+
+        return $this->response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
+            ->withType('application/json')
+            ->withStatus($statusCode)
+            ->withStringBody(json_encode($response));
+    }
+
 
     /**
      * Delete method
