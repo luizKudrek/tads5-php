@@ -116,16 +116,10 @@ class VeiculosController extends AppController
         }
         $fabricantes = $this->Veiculos->Fabricantes->find('list', limit: 200)->all();
         $tipos = $this->Veiculos->Tipos->find('list', limit: 200)->all();
-      //  $this->set(compact('veiculo', 'fabricantes', 'tipos'));
-        return $this->response
-            ->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
-            ->withStatus($statusCode)
-            ->withType('application/json')
-            ->withStringBody(json_encode($response));
+        $this->set(compact('veiculo', 'fabricantes', 'tipos'));
     }
     */
+
     public function edit($id = null)
     {
         $response = null;
