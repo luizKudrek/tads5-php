@@ -37,10 +37,35 @@ class PecasController extends AppController
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view()
     {
-        $peca = $this->Pecas->get($id, contain: ['Fornecedors', 'Manupecas']);
-        $this->set(compact('peca'));
+        $response = null;
+        $statusCode = 200;
+
+        $id = $this->request->getData('id') ?? $this->request->getQuery('id');
+
+        if (!$id) {
+            $statusCode = 400;
+            $response = ['erro' => 'ID da peça não fornecido.'];
+        } else {
+            try {
+                $peca = $this->Pecas->get($id, [
+                    'contain' => ['Fornecedors', 'Manupecas']
+                ]);
+                $response = $peca;
+            } catch (\Exception $e) {
+                $statusCode = 404;
+                $response = ['erro' => 'Peça não encontrada.'];
+            }
+        }
+
+        return $this->response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
+            ->withStatus($statusCode)
+            ->withType('application/json')
+            ->withStringBody(json_encode($response));
     }
 
     /**
@@ -71,21 +96,47 @@ class PecasController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit()
     {
-        $peca = $this->Pecas->get($id, contain: []);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $peca = $this->Pecas->patchEntity($peca, $this->request->getData());
-            if ($this->Pecas->save($peca)) {
-                $this->Flash->success(__('The peca has been saved.'));
+        $response = null;
+        $statusCode = 200;
 
-                return $this->redirect(['action' => 'index']);
+        try {
+            $data = $this->request->getData();
+
+            if (!isset($data['id'])) {
+                throw new \Exception("ID da peça não fornecido");
             }
-            $this->Flash->error(__('The peca could not be saved. Please, try again.'));
+
+            $peca = $this->Pecas->get($data['id'], ['contain' => []]);
+
+            if ($this->request->is(['patch', 'post', 'put'])) {
+                $peca = $this->Pecas->patchEntity($peca, $data);
+
+                if ($this->Pecas->save($peca)) {
+                    $response = ['status' => 'success', 'message' => 'Peça atualizada com sucesso'];
+                } else {
+                    $statusCode = 400;
+                    $response = ['status' => 'error', 'message' => 'Erro ao atualizar a peça', 'errors' => $peca->getErrors()];
+                }
+            } else {
+                $statusCode = 405;
+                $response = ['status' => 'error', 'message' => 'Método não permitido'];
+            }
+        } catch (\Exception $e) {
+            $statusCode = 500;
+            $response = ['status' => 'error', 'message' => 'Erro interno do servidor', 'exception' => $e->getMessage()];
         }
-        $fornecedors = $this->Pecas->Fornecedors->find('list', limit: 200)->all();
-        $this->set(compact('peca', 'fornecedors'));
+
+        return $this->response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
+            ->withType('application/json')
+            ->withStatus($statusCode)
+            ->withStringBody(json_encode($response));
     }
+
 
     /**
      * Delete method
@@ -94,16 +145,38 @@ class PecasController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete()
     {
         $this->request->allowMethod(['post', 'delete']);
-        $peca = $this->Pecas->get($id);
-        if ($this->Pecas->delete($peca)) {
-            $this->Flash->success(__('The peca has been deleted.'));
-        } else {
-            $this->Flash->error(__('The peca could not be deleted. Please, try again.'));
+        $response = null;
+        $statusCode = 200;
+
+        $id = $this->request->getData('id');
+
+        try {
+            if (!$id) {
+                throw new \Exception('ID não fornecido.');
+            }
+
+            $peca = $this->Pecas->get($id);
+
+            if ($this->Pecas->delete($peca)) {
+                $response = ['status' => 'success', 'message' => 'Peça excluída com sucesso.'];
+            } else {
+                $statusCode = 500;
+                $response = ['status' => 'error', 'message' => 'Erro ao excluir a peça.'];
+            }
+        } catch (\Exception $e) {
+            $statusCode = 500;
+            $response = ['status' => 'error', 'message' => 'Erro ao excluir a peça.', 'exception' => $e->getMessage()];
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
+            ->withType('application/json')
+            ->withStatus($statusCode)
+            ->withStringBody(json_encode($response));
     }
 }
