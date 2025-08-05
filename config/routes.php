@@ -75,6 +75,7 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/editServico', ['controller' => 'Editar', 'action' => 'editarServico']);
         $builder->connect('/editFabricantes', ['controller' => 'Fabricantes', 'action' => 'edit']);
         $builder->connect('/editVeiculos', ['controller' => 'Veiculos', 'action' => 'edit']);
+        $builder->connect('/editPecas', ['controller' => 'Pecas', 'action' => 'edit']);
 
         // Visualizar os itens salvos do Danco de Dados.
         $builder->connect('/visualManutencao', ['controller' => 'Visualizacaos', 'action' => 'visualManutencao']);
@@ -86,6 +87,7 @@ return function (RouteBuilder $routes): void {
 
         // Deletar itens.
         $builder->connect('/deleteVeiculos', ['controller' => 'Veiculos', 'action' => 'delete']);
+        $builder->connect('/deletePecas', ['controller' => 'Pecas', 'action' => 'delete']);
 
         // Visualizar apenas um item por id
         $builder->connect('/viewVeiculos', ['controller' => 'Veiculos', 'action' => 'view']);
