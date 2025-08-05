@@ -116,27 +116,24 @@ class VeiculosController extends AppController
         }
         $fabricantes = $this->Veiculos->Fabricantes->find('list', limit: 200)->all();
         $tipos = $this->Veiculos->Tipos->find('list', limit: 200)->all();
-      //  $this->set(compact('veiculo', 'fabricantes', 'tipos'));
-        return $this->response
-            ->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
-            ->withStatus($statusCode)
-            ->withType('application/json')
-            ->withStringBody(json_encode($response));
+        $this->set(compact('veiculo', 'fabricantes', 'tipos'));
     }
     */
-    public function edit($id = null)
-    {
+
+    public function edit() {
         $response = null;
         $statusCode = 200;
 
         try {
-            $veiculo = $this->Veiculos->get($id, ['contain' => []]);
+            $data = $this->request->getData();
+
+            if (!isset($data['id'])) {
+                throw new \Exception("ID do veículo não fornecido");
+            }
+
+            $veiculo = $this->Veiculos->get($data['id'], ['contain' => []]);
 
             if ($this->request->is(['patch', 'post', 'put'])) {
-                $data = $this->request->getData();
-
                 $veiculo = $this->Veiculos->patchEntity($veiculo, $data);
 
                 if ($this->Veiculos->save($veiculo)) {
@@ -162,6 +159,7 @@ class VeiculosController extends AppController
             ->withStatus($statusCode)
             ->withStringBody(json_encode($response));
     }
+
 
 
     /**
