@@ -172,13 +172,41 @@ class VeiculosController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        $veiculo = $this->Veiculos->get($id);
-        if ($this->Veiculos->delete($veiculo)) {
-            $this->Flash->success(__('The veiculo has been deleted.'));
-        } else {
-            $this->Flash->error(__('The veiculo could not be deleted. Please, try again.'));
+
+        $response = null;
+        $statusCode = 200;
+
+        try {
+            $veiculo = $this->Veiculos->get($id);
+
+            if ($this->Veiculos->delete($veiculo)) {
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Veículo excluído com sucesso.'
+                ];
+            } else {
+                $statusCode = 500;
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Erro ao excluir o veículo.'
+                ];
+            }
+        } catch (\Exception $e) {
+            $statusCode = 500;
+            $response = [
+                'status' => 'error',
+                'message' => 'Erro ao excluir o veículo.',
+                'exception' => $e->getMessage()
+            ];
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
+            ->withType('application/json')
+            ->withStatus($statusCode)
+            ->withStringBody(json_encode($response));
     }
+
 }
