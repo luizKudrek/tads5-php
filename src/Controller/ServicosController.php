@@ -112,74 +112,50 @@ class ServicosController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete()
     {
-        // 1. Garante que a requisição seja feita via POST ou DELETE
-        try {
-            $this->request->allowMethod(['post', 'delete']);
-        } catch (MethodNotAllowedException $e) {
-            return $this->response
-                ->withHeader('Access-Control-Allow-Origin', '*')
-                ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
-                ->withStatus(405) // 405 Method Not Allowed
-                ->withType('application/json')
-                ->withStringBody(json_encode(['message' => 'Método não permitido para esta ação.']));
-        }
+        $this->request->allowMethod(['post', 'delete']);
 
-        // 2. Tenta obter o registro pelo ID
-        if ($id === null) {
-            return $this->response
-                ->withHeader('Access-Control-Allow-Origin', '*')
-                ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
-                ->withStatus(400) // 400 Bad Request
-                ->withType('application/json')
-                ->withStringBody(json_encode(['message' => 'ID do serviço não fornecido.']));
-        }
+        $response = null;
+        $statusCode = 200;
+
+        $id = $this->request->getData('id');
 
         try {
+            if (!$id) {
+                throw new \Exception('ID do serviço não fornecido.');
+            }
+
             $servico = $this->Servicos->get($id);
-        } catch (RecordNotFoundException $e) {
-            // Se não encontrar o registro, retorna erro 404
-            return $this->response
-                ->withHeader('Access-Control-Allow-Origin', '*')
-                ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
-                ->withStatus(404) // 404 Not Found
-                ->withType('application/json')
-                ->withStringBody(json_encode(['message' => 'Serviço não encontrado para o ID fornecido.']));
+
+            if ($this->Servicos->delete($servico)) {
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Serviço excluído com sucesso.'
+                ];
+            } else {
+                $statusCode = 500;
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Erro ao excluir o serviço.'
+                ];
+            }
         } catch (\Exception $e) {
-            // Captura outras exceções na busca (ex: ID inválido que não seja um UUID se for o caso)
-            return $this->response
-                ->withHeader('Access-Control-Allow-Origin', '*')
-                ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
-                ->withStatus(500) // 500 Internal Server Error
-                ->withType('application/json')
-                ->withStringBody(json_encode(['message' => 'Ocorreu um erro inesperado ao buscar o serviço.', 'error' => $e->getMessage()]));
+            $statusCode = 500;
+            $response = [
+                'status' => 'error',
+                'message' => 'Erro ao excluir o serviço.',
+                'exception' => $e->getMessage()
+            ];
         }
 
-        // 3. Tenta deletar o registro
-        if ($this->Servicos->delete($servico)) {
-            return $this->response
-                ->withHeader('Access-Control-Allow-Origin', '*')
-                ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
-                ->withStatus(204); // 204 No Content é o padrão para DELETE bem-sucedido sem retorno de corpo
-            // Ou 200 OK com uma mensagem de sucesso, se preferir:
-            // ->withStatus(200)
-            // ->withType('application/json')
-            // ->withStringBody(json_encode(['message' => 'Serviço deletado com sucesso.']));
-        } else {
-            // Se houver regras de negócio ou restrições de chave estrangeira que impeçam a deleção
-            return $this->response
-                ->withHeader('Access-Control-Allow-Origin', '*')
-                ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
-                ->withStatus(500) // 500 Internal Server Error
-                ->withType('application/json')
-                ->withStringBody(json_encode(['message' => 'O serviço não pôde ser deletado. Por favor, tente novamente.', 'errors' => $servico->getErrors()]));
-        }
+        return $this->response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Autenticacao')
+            ->withType('application/json')
+            ->withStatus($statusCode)
+            ->withStringBody(json_encode($response));
     }
+
 }

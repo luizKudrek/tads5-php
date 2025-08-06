@@ -88,6 +88,7 @@ return function (RouteBuilder $routes): void {
         // Deletar itens.
         $builder->connect('/deleteVeiculos', ['controller' => 'Veiculos', 'action' => 'delete']);
         $builder->connect('/deletePecas', ['controller' => 'Pecas', 'action' => 'delete']);
+        $builder->connect('/deleteServicos', ['controller' => 'Servicos', 'action' => 'delete']);
 
         // Visualizar apenas um item por id
         $builder->connect('/viewVeiculos', ['controller' => 'Veiculos', 'action' => 'view']);
